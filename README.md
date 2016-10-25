@@ -6,7 +6,7 @@ This  <a href="https://www.jstor.org/stable/2528964?seq=1#page_scan_tab_contents
 
 <a href="https://github.com/JingwenX/AndrewCurvesToIndentifyOutliers/blob/master/Andrews.R">My R Script for Andrews Curves</a>
 
-## Demo of the Andrews Curves R Script (on gene expression data in <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA109993"> Dietary Fatty Acid Effect on Gene Expression Study</a>)
+## Demo on Using the Andrews Curves R Script to Identify Suspected Abnormal Experimental Unit (on gene expression data in <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA109993"> Dietary Fatty Acid Effect on Gene Expression Study</a>)
 
 You are welcome to go to <a href="http://htmlpreview.github.io/?">html preview tool</a> to see my demo. (html preview on GitHub is currently not available for the demo of this project)
 
