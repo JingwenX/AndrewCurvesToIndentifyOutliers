@@ -1,0 +1,151 @@
+---
+title: "JingwenXu-AndrewsCurvesDemo"
+author: "Jingwen Xu"
+date: "October 24, 2016"
+output: html_document
+---
+
+This project is intended to demonstrate the use of Andrews Curves in identifying suspective outliers in high dimensional data.
+
+Abnormal data (outliers) would be a challenge when performing statistical analysis. But for a project that uses gene expression profile to study the effect of molecules, the dimension could be very high, at which point it would be hard to identify single outliers.
+
+If the baseline (controlled group) gene expression data includes some abnormal individuals, if would affect the following study of the data. Thus here I use one high dimensional data visualization tool "Andrews Curves" to identify the abnormal experimental unit at baseline (controlled group), in order to clean the data for further use.
+
+[Andrews Curves](https://www.jstor.org/stable/2528964?seq=1#page_scan_tab_contents) help to transform high dimensional data into curves, and could be used to visualize the outliers.
+
+The function for Andrews Curves is as followed:
+
+```{r, message=F, warning=F,results='hide'}
+andrews <- function(x,scale=T,npoints=100,plot=T,colour) {
+    if (scale) x <- scale(x,center=T,scale=T)
+    tt <- c(1:npoints)/npoints
+    p <- ncol(x)
+    n <- nrow(x)
+    if (missing(colour)) colour <- rep("black",n)
+    # Make matrix of sines and cosines
+    y <- rep(1,npoints)/sqrt(2)
+    sine <- T
+    count <- 0
+    for (i in 2:p) {             
+        if (sine) {
+            count <- count + 1
+            y <- cbind(y,sin(2*count*pi*tt))
+        }
+        else y <- cbind(y,cos(2*count*pi*tt))
+        sine <- !sine
+    }
+    # Compute Andrews curves
+    curves <- NULL
+    for (i in 1:n) {
+        xx <- as.vector(x[i,])
+        curves <- cbind(curves,as.vector(y%*%xx))
+    }
+    if (plot) {
+        high <- max(curves)
+        low <- min(curves)
+        plot(NULL,xlim=c(0,1),ylim=c(low,high),
+             type="n",xlab="t",ylab=" ")
+        for (i in 1:n) lines(tt,curves[,i],col=colour[i])
+    }
+    curves
+}
+```
+
+Here I present a demostration of using the Andrews Curves for identifying the gene expression profile used in the study: [Acute effects of different dietary fatty acids on the gene expression profiles of PBMCs of healthy young men, Accession: PRJNA109993; GEO: GSE13466](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA109993)
+
+This research studied the Peripheral blood mononuclear cells gene expression profile for 21 healthy men, where each man was examined for four times:
+
+1) [baseline] before PUFA shake intake
+2) 6 hours after PUFA shake intake
+3) [baseline] before SFA shake intake
+4) 6 hours after SFA shake intake
+
+My concern is that the study of effect of dietary fatty acids maybe misdirected if the baseline data includes some outliers. Here I did a trial examination of the first set of the baseline data "before PUFA shake intake", trying to identify less than some individual(s) with gene expression profile that's very different than the other indiduals.
+
+Note: this data has a dimension of 15696, and I have just examined up to the first 200 dimensions due to time limitation and computing power limitation.
+
+Step 1) load data and formatting as followed:
+
+```{r, message=F, warning=F,results='hide'}
+fattyAcid.dat <- read.csv(sep = "\t","GSE13466_series_matrix.txt")
+df <- data.frame(fattyAcid.dat)
+# fattyAcid.dat <- data.frame(t(df), header = TRUE)
+rownames(df) <- as.character(unlist(df[,1]))
+df  = df[,-1 ]
+fattyAcid.dat <- data.frame(t(df), header = TRUE)
+```
+
+Step 2) Perform a trial outlier examination with first 30 RMA signal values.
+
+```{r,message=F, warning=F,results='hide'}
+# plotting andrews curve for the first 30 signals
+first30.dat <- fattyAcid.dat[1:27, 1:30] # subsetting to first 30 signals
+
+colour <- rep("black",27)
+r <- andrews(first30.dat, plot = F)
+AbnormalPoints30signals <- NULL
+for (i in 1:27) {
+    if (max(abs(r[,i]))>15) AbnormalPoints30signals <- c(AbnormalPoints30signals,i)
+}# 15 is selected for keeping the percentage of suspected abonormal being less than 15% of the total individual
+
+colour[AbnormalPoints30signals] <- "red" 
+andrews(first30.dat,colour=colour) # plot andrews curves with abnormal
+```
+
+Step 3) Check individual(s) suspected to be abnormal which is labeled red in the plot above.
+
+```{r}
+# check abnormal points
+AbnormalPoints30signals
+```
+
+Step 4) Perform a trial outlier examination with first 30 RMA signal values.
+
+```{r,message=F, warning=F,results='hide'}
+# plotting andrews curve for the first 100 signals
+first100.dat <- fattyAcid.dat[1:27, 1:100] # subsetting to first 100 signals
+
+colour <- rep("black",27)
+r <- andrews(first100.dat, plot = F)
+AbnormalPoints100signals <- NULL
+for (i in 1:27) {
+    if (max(abs(r[,i]))>25) AbnormalPoints100signals <- c(AbnormalPoints100signals,i)
+} # 25 is selected for keeping the percentage of suspected abonormal being less than 15% of the total individual
+
+colour[AbnormalPoints100signals] <- "red" 
+andrews(first100.dat,colour=colour) # plot andrews curves with abnormal
+```
+
+Step 5) Check individual(s) suspected to be abnormal which is labeled red in the plot above.
+
+```{r}
+# check abnormal points
+AbnormalPoints100signals
+```
+
+Step 6) Perform a trial outlier examination with first 200 RMA signal values.
+
+```{r,message=F, warning=F,results='hide' }
+# plotting andrews curve for the first 200 signals
+first200.dat <- fattyAcid.dat[1:27, 1:200] # subsetting to first 200 signals
+
+colour <- rep("black",27)
+r <- andrews(first200.dat, plot = F)
+AbnormalPoints200gene <- NULL
+for (i in 1:27) {
+    if (max(abs(r[,i]))>33) AbnormalPoints200gene <- c(AbnormalPoints200gene,i)
+} # 33 is selected for keeping the percentage of suspected abonormal being less than 15% of the total individual
+
+colour[AbnormalPoints200gene] <- "red" 
+andrews(first200.dat,colour=colour) # plot andrews curves with abnormal
+```
+
+Step 7) Check individual(s) suspected to be abnormal which is labeled red in the plot above.
+
+```{r}
+# check abnormal points
+AbnormalPoints200gene
+```
+
+
+We can see from the above trail demostration, for some of the individuals, the data do seems a little bit different than the others'. And we can expand this analysis to the full scale (for all RMA signal values) to visualize and identify suspected abnormal individuals and possibly exclude them if it is neccessary for later studies.
