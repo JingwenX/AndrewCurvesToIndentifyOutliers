@@ -10,6 +10,6 @@ This  <a href="https://www.jstor.org/stable/2528964?seq=1#page_scan_tab_contents
 
 You are welcome to go to <a href="http://htmlpreview.github.io/?">html preview tool</a> to see my demo. (html preview on GitHub is currently not available for the demo of this project)
 
-Input this url to the html preview tool as above:
+Input this url into the <a href="http://htmlpreview.github.io/?">html preview tool</a> mentioned above:
 
 https://github.com/JingwenX/AndrewCurvesToIndentifyOutliers/blob/master/JingwenXu-AndrewsCurvesDemo.html
