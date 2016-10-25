@@ -116,8 +116,9 @@ $(document).ready(function () {
 </div>
 
 
-<p>Abstract: Abnormal data (outliers) would be a headache when using statistical analysis. For a project that uses gene expression profile to study the effect of molecules, the dimension could be very high, at which point it would be hard to identify single outliers.</p>
-<p>If the baseline gene expression data has some abnormal, if would affect the later study of the data. Thus here I use one high dimensional data visualization tool “Andrews Curves” to identify the abnormal experimental unit at baseline, in order to clean the data for further use.</p>
+<p>This project is intended to demonstrate the use of Andrews Curves in identifying suspective outliers in high dimensional data.</p>
+<p>Abnormal data (outliers) would be a challenge when performing statistical analysis. But for a project that uses gene expression profile to study the effect of molecules, the dimension could be very high, at which point it would be hard to identify single outliers.</p>
+<p>If the baseline (controlled group) gene expression data includes some abnormal individuals, if would affect the following study of the data. Thus here I use one high dimensional data visualization tool “Andrews Curves” to identify the abnormal experimental unit at baseline (controlled group), in order to clean the data for further use.</p>
 <p><a href="https://www.jstor.org/stable/2528964?seq=1#page_scan_tab_contents">Andrews Curves</a> help to transform high dimensional data into curves, and could be used to visualize the outliers.</p>
 <p>The function for Andrews Curves is as followed:</p>
 <pre class="r"><code>andrews &lt;- function(x,scale=T,npoints=100,plot=T,colour) {
